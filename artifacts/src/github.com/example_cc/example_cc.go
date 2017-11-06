@@ -139,6 +139,30 @@ func (t *OrderAsset) createOrder(stub shim.ChaincodeStubInterface, args []string
 
 }
 
+//Set Purchase Order Status
+func (t *OrderAsset) setPOStatus(stub shim.ChaincodeStubInterface, args []string) pd.Response {
+	var err error
+	var order Order = Order{}
+	//var postat POStatus = POStatus{}
+
+	if len(args) < 2 {
+		jsonError := "\"Error\": \"Expecting order to be provided in parameter list\""
+		return shim.Error(jsonError)
+	}
+	err = json.Unmarshal([]byte(args[0]), &order)
+	if err != nil {
+		fmt.Printf(err.Error())
+		jsonError := "\"Error\": \"" + err.Error() + "\""
+		return shim.Error(jsonError)
+	}
+
+	err = stub.PutState(order.OrderNumber, []byte(args[0]))
+
+	fmt.Printf(">>> Order status changed to: " + order.OrderNumber)
+	return shim.Success(nil)
+
+}
+
 //Creates a computer
 func (t *OrderAsset) getPurchaseOrder(stub shim.ChaincodeStubInterface, args []string) pd.Response {
 	var order Order = Order{}

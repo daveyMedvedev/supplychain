@@ -14,6 +14,9 @@ import (
 	pd "github.com/hyperledger/fabric/protos/peer"
 )
 
+//deifne logger
+var logger = shim.NewLogger("order_chaincode")
+
 // SimpleAsset implements a simple chaincode to manage an asset
 type OrderAsset struct {
 }
@@ -83,6 +86,8 @@ type POStatus struct {
 // data. Note that chaincode upgrade also calls this function to reset
 // or to migrate data.
 func (t *OrderAsset) Init(stub shim.ChaincodeStubInterface) pd.Response {
+
+	logger.Info("########### ORDER_CHAINCODE Init ###########")
 	// Get the args from the transaction proposal
 	return shim.Success(nil)
 }
@@ -91,6 +96,7 @@ func (t *OrderAsset) Init(stub shim.ChaincodeStubInterface) pd.Response {
 // either a 'get' or a 'set' on the asset created by Init function. The Set
 // method may create a new asset by specifying a new key-value pair.
 func (t *OrderAsset) Invoke(stub shim.ChaincodeStubInterface) pd.Response {
+	logger.Info("########### ORDER_CHAINCODE Invoke ###########")
 	// Extract the function and args from the transaction proposal
 	fn, args := stub.GetFunctionAndParameters()
 

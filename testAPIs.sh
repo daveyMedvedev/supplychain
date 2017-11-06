@@ -104,22 +104,36 @@ curl -s -X POST \
 echo
 echo
 
-#echo "POST instantiate chaincode on peer1 of Org1"
-#echo
-#curl -s -X POST \
-#  http://localhost:4000/channels/mychannel/chaincodes \
-#  -H "authorization: Bearer $ORG1_TOKEN" \
-#  -H "content-type: application/json" \
-#  -d '{
-#	"chaincodeName":"mycc2",
-#	"chaincodeVersion":"v0",
-#	"args":["a","100","b","200"]
-#}'
-#echo
-#echo
-##
 
 
+echo "POST instantiate chaincode on peer1 of Org1"
+echo
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes \
+  -H "authorization: Bearer $ORG1_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{
+	"chaincodeName":"mycc2",
+	"chaincodeVersion":"v0",
+	"args":["a","100","b","200"]
+}'
+echo
+echo
+
+echo "POST create order on peer1 of Org1"
+echo
+curl -s -X POST \
+  http://localhost:4000/channels/mychannel/chaincodes/mycc2 \
+  -H "authorization: Bearer $ORG1_TOKEN" \
+  -H "content-type: application/json" \
+  -d '{
+	"chaincodeName":"mycc2",
+	"chaincodeVersion":"v0",
+  "chaincodePath":"github.com/example_cc",
+  "fcn":"createOrder",
+	"args":["{\"doctype\": \"PurchaseOrder\",\"ordernumber\": \"1234\",\"referencenumber\": \"1\",\"From\": \"Me\",\"To\": \"You\",\"part\": [{\"doctype\": \"Part\",\"partnumber\": \"1234\",\"description\": \"a widget\",\"unitofmeasure\": \"PCE\"},{\"doctype\": \"Part2\",\"partnumber\": \"4321\",\"description\": \"a doodad\",\"unitofmeasure\": \"PCE\"}]}"]}'
+echo
+echo
 #echo "POST invoke chaincode on peers of Org1 and Org2"
 #echo
 #TRX_ID=$(curl -s -X POST \
@@ -150,6 +164,17 @@ echo
 #  -H "x-access-token: $ORG1_TOKEN"
 #echo
 #echo
+
+
+echo "GET order 1234"
+echo
+curl -s -X GET \
+  "http://localhost:4000/channels/mychannel/chaincodes/mycc2?peer=peer1&fcn=getPurchaseOrder&args=%5B%221234%22%5D" \
+  -H "authorization: Bearer $ORG1_TOKEN" \
+  -H "content-type: application/json"
+echo
+echo
+
 
 echo "GET query ChainInfo"
 echo
